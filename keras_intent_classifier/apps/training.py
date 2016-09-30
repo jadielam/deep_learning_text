@@ -18,8 +18,8 @@ import json
 import os
 
 EMBEDDING_DIM = 100
-MAX_NB_WORDS = 10000
-MAX_SEQUENCE_LENGTH = 20
+MAX_NB_WORDS = 20000
+MAX_SEQUENCE_LENGTH = 200
 VALIDATION_SPLIT = 0.2
 
 def index_word_vectors(glove_dir):
@@ -86,7 +86,7 @@ def train_model(nb_labels, nb_words, embedding_matrix, max_sequence_length):
     x = Conv1D(128, 5, activation='relu')(x)
     x = MaxPooling1D(35)(x)
     x = Flatten()(x)
-    x = Dense(64, activation='relu')(x)
+    x = Dense(128, activation='relu')(x)
     preds = Dense(nb_labels, activation='softmax')(x)
 
     model = Model(sequence_input, preds)
