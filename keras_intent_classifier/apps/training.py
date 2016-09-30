@@ -18,8 +18,8 @@ import json
 import os
 
 EMBEDDING_DIM = 100
-MAX_NB_WORDS = 20000
-MAX_SEQUENCE_LENGTH = 40
+MAX_NB_WORDS = 10000
+MAX_SEQUENCE_LENGTH = 20
 VALIDATION_SPLIT = 0.2
 
 def index_word_vectors(glove_dir):
