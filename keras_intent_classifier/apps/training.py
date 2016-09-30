@@ -86,7 +86,7 @@ def train_model(nb_labels, nb_words, embedding_matrix, max_sequence_length):
     x = Conv1D(128, 5, activation='relu')(x)
     x = MaxPooling1D(35)(x)
     x = Flatten()(x)
-    x = Dense(128, activation='relu')(x)
+    x = Dense(64, activation='relu')(x)
     preds = Dense(nb_labels, activation='softmax')(x)
 
     model = Model(sequence_input, preds)
