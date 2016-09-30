@@ -72,7 +72,7 @@ def prepare_embedding_matrix(word_index, embeddings_index):
             embedding_matrix[i] = embedding_vector
     return embedding_matrix, nb_words
 
-def model(nb_labels, nb_words, embedding_matrix, max_sequence_length):
+def train_model(nb_labels, nb_words, embedding_matrix, max_sequence_length):
     embedding_layer = Embedding(nb_words + 1, EMBEDDING_DIM,
                                 weights = [embedding_matrix],
                                 input_length = max_sequence_length,
@@ -110,7 +110,7 @@ def main():
     data, word_index = tokenize_text(texts, max_sequence_length)
     labels = categorize_labels(labels)
     embedding_matrix, nb_words = prepare_embedding_matrix(word_index, embeddings_index)
-    model = model(len(index_labels), nb_words, embedding_matrix, max_sequence_length)
+    model = train_model(len(index_labels), nb_words, embedding_matrix, max_sequence_length)
     
     nb_validation_samples = int(VALIDATION_SPLIT * data.shape[0])
     x_train = data[:-nb_validation_samples]
