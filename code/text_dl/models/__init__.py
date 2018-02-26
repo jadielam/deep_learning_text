@@ -14,7 +14,7 @@ class Model(nn.Module):
     def __init__(self):
         pass
         
-    def loss(self):
+    def loss(self, input_t, ground_truth):
         '''
         Forward pass of the model including loss
         function

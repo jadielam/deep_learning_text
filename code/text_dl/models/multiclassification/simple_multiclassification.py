@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from text_dl.models import Model
 from text_dl.common.devices import use_cuda
 from text_dl.modules.encoders import EncoderRNN
@@ -16,7 +18,10 @@ class SimpleMulticlassificationModel(Model):
         # Modules
         self.encoder = EncoderRNN(embedding, batch_size, bidirectional = True)
         self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size, nb_classes)
-        self.classifier = Classifier(nb_classes, self.hidden_size * nb_classes)
+        self.classifier = Classifier(nb_classes, self.hidden_size * nb_classes, classifier_function = F.sigmoid)
+
+        # Loss
+        self.criterion = nn.BCELoss()
         
     def forward(self, input_t):
         '''
@@ -31,6 +36,15 @@ class SimpleMulticlassificationModel(Model):
         classification = self.classifier(attn_applied)
         return classification
 
-    def loss(self):
-        return None
+    def loss(self, input_t, ground_truth):
+        '''
+        Arguments:
+
+        - input_t (:obj:`torch.Tensor`) of size (seq_len, batch)
+        '''
+        classification = self.forward(input_t)
+        loss = self.criterion(classification, ground_truth)
+        return loss
+
+        
     
