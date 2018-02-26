@@ -12,9 +12,8 @@ def generators_factory(model_conf, generator_conf):
         - val_itr (:obj:`torchtext.data.iterator.Iterator`): validation iterator or None if not present
     '''
     if model_conf['type'] == 'multiclassification':
-        return multi_csv_generator(generator_conf['params']['path'], 
-                                    generator_conf['params']['training_file'],
-                                    generator_conf['params'].get('validation_file', None),
+        return multi_csv_generator(generator_conf['params']['training_path'], 
+                                    generator_conf['params'].get('validation_path', None),
                                     generator_conf['params']['nb_classes'],
                                     model_conf['params']['batch_size'])
                     

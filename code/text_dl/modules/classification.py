@@ -1,8 +1,11 @@
+from functools import partial
 import torch
 import torch.nn as nn
 import torcn.nn.functional as F
 
-class Classifier(nn.Module):
+from text_dl.modules import Module
+
+class Classifier(Module):
     '''
     Standard multilayer perceptron classifier.
     '''
@@ -18,7 +21,7 @@ class Classifier(nn.Module):
                              Usually will be softmax or sigmoid
         '''
         super(Classifier, self).__init__()
-        self.classifier_function = classifier_function
+        self.classifier_function = partial(classifier_function, 1)
         self.activation_function = activation_function
 
         dims = []
@@ -30,12 +33,16 @@ class Classifier(nn.Module):
                 dim_entry[1] = nb_classes
             dims.append(dim_entry)
 
-        self.layers = [nn.Linear(dims[i][0], dims[i][1]) for i in range(len(dims))]
+        self.layers = []
+        for i in range(len(dims)):
+            linear_layer = nn.Linear(dims[i][0], dims[i][1])
+            self.layers.append(linear_layer)
+            super(Classifier, self).add_module("linear_{}".format(i), linear_layer)
 
     def forward(self, input_t):
         '''
         Arguments:
-        - input_t (:obj:`torch.Tensor`): input tensor to use for classification
+        - input_t_l (:obj:`torch.Tensor`): input tensor to use for classification
 
         Returns:
         - output (:obj:`torch.Tensor`)

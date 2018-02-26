@@ -11,35 +11,42 @@ class EncoderRNN(Module):
     '''
     Encodes input using an RNN
     '''
-    def __init__(self, vocab, train_embedding = False, 
+    def __init__(self, embedding,
+                    batch_size,
                     bidirectional = False):
         super(EncoderRNN, self).__init__()
-        self.vocab_size = vocab.vectors.shape[0]
-        self.hidden_size = vocab.vectors.shape[1]
-        self.embedding = nn.Embedding(self.vocab_size, self.hidden_size)
-        self.embedding.weight = nn.Parameter(vocab.vectors)
-        self.embedding.weight.requires_grad = train_embedding
+        self.embedding = embedding
+        self.batch_size = batch_size
+        self.bidirectional = bidirectional
+        self.hidden_size = self.embedding.embedding_dim
         self.gru = nn.GRU(self.hidden_size, self.hidden_size,
-                         bidirectional = bidirectional)
+                         bidirectional = bidirectional, 
+                         batch_first = False)
         
-    def forward(self, vocab_index, hidden):
+    def forward(self, input_t, hidden):
         '''
-        vocab_index: (int) the vocabulary index of the original token in the vocabulary. The initial input token is the start-of-string <SOS> token
-        hidden: the hidden state of the previous call to forward. The initial hidden state is given by self.init_hidden()
+        Arguments:
+
+        - input_t (:obj:`torch.Tensor`): Tensor of shape (N, W) N is mini-batch size, W is number of indices to extract per minibatch.
+        - hidden (:obj:`torch.Tensor`): the hidden state of the previous call to forward. The initial hidden state is given by self.init_hidden()
+                                        The hidden dimension is (num_layers * num_directions, batch_size, hidden_size)
         '''
-        embedded = self.embedding(vocab_index).view(1, 1, -1)
-        output = embedded
-        output, hidden = self.gru(output, hidden)
+        embedded = self.embedding(input_t)
+        output, hidden = self.gru(embedded, hidden)
         return output, hidden
         
     def init_hidden(self, use_cuda):
         '''
         Returns the initialized first hidden state.
+        
+        Arguments:
+        - batch_size (int): The size of the batch
         '''
         num_directions = 2 if self.bidirectional else 1
         num_layers = self.gru.num_layers
-
-        result = Variable(torch.zeros(num_layers * num_directions, 1, self.hidden_size))
+        
+        result = Variable(torch.zeros(num_layers * num_directions, self.batch_size, self.hidden_size))
+        
         if use_cuda:
             return result.cuda()
         else:
