@@ -2,7 +2,6 @@
 Contains model definitions for the different kinds of problems to solve.
 '''
 
-import itertools.ifilter as ifilter
 import torch.nn as nn
 from text_dl.common.devices import use_cuda
 from text_dl.modules.embeddings import embedding_factory
@@ -28,7 +27,7 @@ class Model(nn.Module):
         Returns the parameters that are optimizable.
         In this way you can instantiate an optimizer to use them
         '''
-        return ifilter(lambda p: p.requires_grad, 
+        return filter(lambda p: p.requires_grad, 
                 super(Model, self).parameters())
     
     def use_cuda(self):

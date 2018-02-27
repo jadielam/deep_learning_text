@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from text_dl.models import Model
+from text_dl.models.model import Model
 from text_dl.common.devices import use_cuda
 from text_dl.modules.encoders import EncoderRNN
 from text_dl.modules.decoders import AttentionDecoder

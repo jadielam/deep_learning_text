@@ -2,7 +2,7 @@
 # docker build -t training -f Dockerfile .
 
 # To run:
-# nvidia-docker run -t training
+# nvidia-docker run -it training
 
 FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04 
 
