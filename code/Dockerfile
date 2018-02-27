@@ -1,3 +1,9 @@
+# To Build:
+# docker build -t training -f Dockerfile .
+
+# To run:
+# nvidia-docker run -t training
+
 FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04 
 
 RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
@@ -51,7 +57,7 @@ RUN python -m nltk.downloader perluniprops nonbreaking_prefixes
 
 # Add code to folder
 RUN mkdir -p /src
-ADD code/ src/deep_learning_text
+ADD code/ /src/deep_learning_text
 ENV PYTHONPATH='$PYTHONPATH:/src/deep_learning_text'
 
 #EXPOSE 8888
