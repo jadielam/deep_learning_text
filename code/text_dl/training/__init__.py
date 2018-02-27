@@ -44,7 +44,7 @@ def train(model, optimizer, train_itr, val_itr, nb_epochs):
 
     
 def trainer_factory(conf):
-    nb_epochs = conf['nb_epochs']
+    nb_epochs = conf['params']['nb_epochs']
     train_f = partial(train, nb_epochs = nb_epochs)
     return train_f
 
@@ -52,6 +52,6 @@ def optimizer_factory(conf, model):
     '''
     For now, only return one kind of optimizer
     '''
-    lr = conf['lr']
+    lr = conf['params']['lr']
     return optim.SGD(model.trainable_parameters(), lr = lr)
 

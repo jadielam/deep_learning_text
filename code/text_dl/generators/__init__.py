@@ -14,7 +14,7 @@ def generators_factory(model_conf, generator_conf):
     if model_conf['type'] == 'multiclassification':
         return multi_csv_generator(generator_conf['params']['training_path'], 
                                     generator_conf['params'].get('validation_path', None),
-                                    generator_conf['params']['nb_classes'],
+                                    model_conf['params']['nb_classes'],
                                     model_conf['params']['batch_size'])
                     
     else:

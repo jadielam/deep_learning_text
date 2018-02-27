@@ -1,0 +1,32 @@
+{
+    "model": {
+        "type": "multiclassification",
+        "params": {
+            "nb_classes": 6,
+            "train_embedding": false,
+            "batch_size": 10,
+            "max_sequence_length": 300
+        }
+    },
+    "trainer": {
+        "type": "simple",
+        "params": {
+            "nb_epochs": 20
+        }
+    },
+    "generator": {
+        "type": "csv_files",
+        "params": {
+            "training_path": "/data/train.csv"
+        },
+        "preprocessors": {
+            
+        }
+    },
+    "optimizer": {
+        "type": "sgd",
+        "params": {
+            "lr": 0.001
+        }
+    }
+}
