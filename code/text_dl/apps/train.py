@@ -27,12 +27,15 @@ def main():
     # Trainer's function
     trainer = trainer_factory(trainer_config)
 
-    optimizer = optimizer_factory(optimizer_config)
+    optimizer = optimizer_factory(optimizer_config, model)
 
     # Results of the training
     results = trainer(model, optimizer, train_itr, val_itr)
 
     # TODO: Save results object somewhere.
+
+    # TODO: Save serialized model and embeddings somewhere.
+    # TODO: I should implement a method in model, called save.
 
 if __name__ == "__main__":
     main()
