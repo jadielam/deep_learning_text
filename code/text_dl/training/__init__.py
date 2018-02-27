@@ -6,6 +6,9 @@ def evaluate(model, val_itr):
     Returns the total loss of the model on the validation
     dataset
     '''
+    if val_itr is None:
+        return None
+
     total_loss = 0.0
 
     for _, batch in enumerate(val_itr):
@@ -37,7 +40,7 @@ def train(model, optimizer, train_itr, val_itr, nb_epochs):
             previous_epoch = train_itr.epoch()
                 
             print("Epoch # {}: training loss - {} \t validation loss - {}".format(train_itr.epoch(), tr_loss_value, val_loss_value))
-                
+
     val_loss_value = evaluate(model, val_itr)
     print("Epoch # {}: training loss - {} \t validation loss - {}".format(train_itr.epoch(), tr_loss_value, val_loss_value))
 
