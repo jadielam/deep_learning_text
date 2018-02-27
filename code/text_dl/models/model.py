@@ -7,7 +7,7 @@ class Model(nn.Module):
     model classes.
     '''
     def __init__(self):
-        pass
+        super(Model, self).__init__()
         
     def loss(self, input_t, ground_truth):
         '''

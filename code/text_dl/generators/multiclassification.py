@@ -1,4 +1,5 @@
 import torchtext.data as data
+from text_dl.common.devices import use_cuda
 
 def preprocessing_factory(nb_classes):
     '''
@@ -9,7 +10,7 @@ def preprocessing_factory(nb_classes):
         Converts a comma separated string of numbers into 
         a list of numbers
         '''
-        entries = [int(a) for a in x.split(",")]
+        entries = [float(a) for a in x.split(",")]
         if len(entries) != nb_classes:
             raise ValueError("The number of classes is not correct")
         return entries
@@ -37,6 +38,7 @@ def csv_generator(training_path, validation_path, nb_classes, batch_size, vocab_
     text_field.build_vocab(*[a for a in datasets if a], vectors = vocab_type)
     vocabulary = text_field.vocab
 
+    device_type = None if use_cuda else -1
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
-                                        device = -1) if dts else None for (dts, train) in zip(datasets, [True, False])]
+                                        device = device_type) if dts else None for (dts, train) in zip(datasets, [True, False])]
     return vocabulary, training_itr, validation_itr

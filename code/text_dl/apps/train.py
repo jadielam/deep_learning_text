@@ -5,6 +5,7 @@ import sys
 from text_dl.models import model_factory
 from text_dl.training import trainer_factory, optimizer_factory
 from text_dl.generators import generators_factory
+from text_dl.common.devices import use_cuda
 
 def main():
     '''
@@ -19,17 +20,24 @@ def main():
     optimizer_config = conf['optimizer']
     
     # Preprocessor object
+    print("Creating vocabulary and iterators")
     vocabulary, train_itr, val_itr = generators_factory(model_config, generator_config)
 
     # Model object
+    print("Creating model")
     model = model_factory(model_config, vocabulary)
+    if use_cuda:
+        model = model.cuda()
 
     # Trainer's function
+    print("Creating trainer")
     trainer = trainer_factory(trainer_config)
 
+    print("Creating optimizer")
     optimizer = optimizer_factory(optimizer_config, model)
 
     # Results of the training
+    print("Training...")
     results = trainer(model, optimizer, train_itr, val_itr)
 
     # TODO: Save results object somewhere.
