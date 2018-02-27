@@ -16,7 +16,7 @@ def preprocessing_factory(nb_classes):
     
     return preprocessing
 
-def csv_generator(training_path, validation_path, nb_classes, batch_size):
+def csv_generator(training_path, validation_path, nb_classes, batch_size, vocab_type = "glove.twitter.27B.200d"):
     '''
     csv_folder (str): Folder that contains the csv file
     train_suffix (str): Suffix of the csv files with the training data
@@ -34,7 +34,7 @@ def csv_generator(training_path, validation_path, nb_classes, batch_size):
     datasets = [data.TabularDataset(path = a, format = "csv", 
                                     fields = fields, skip_header = True) if a else None for a in 
                                     [training_path, validation_path]]
-    text_field.build_vocab(*[a for a in datasets if a], vectors = "glove.twitter.27B.200d")
+    text_field.build_vocab(*[a for a in datasets if a], vectors = vocab_type)
     vocabulary = text_field.vocab
 
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,

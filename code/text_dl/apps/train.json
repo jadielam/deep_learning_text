@@ -17,11 +17,12 @@
     "generator": {
         "type": "csv_files",
         "params": {
-            "training_path": "/data/train.csv"
+            "training_path": "/data/train.csv",
+            "vocab": "glove.twitter.27B.200d"
         },
-        "preprocessors": {
-            
-        }
+        "preprocessors": [
+
+        ]
     },
     "optimizer": {
         "type": "sgd",

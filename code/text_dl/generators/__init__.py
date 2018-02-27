@@ -15,7 +15,8 @@ def generators_factory(model_conf, generator_conf):
         return multi_csv_generator(generator_conf['params']['training_path'], 
                                     generator_conf['params'].get('validation_path', None),
                                     model_conf['params']['nb_classes'],
-                                    model_conf['params']['batch_size'])
+                                    model_conf['params']['batch_size'],
+                                    generator_conf['params']['vocab_type'])
                     
     else:
         raise ValueError("Incorrect generator type: {}".format(generator_conf['type']))
