@@ -1,6 +1,5 @@
 from functools import partial
 from torch import optim
-from text_dl.training.trainer import train
 
 def evaluate(model, val_itr):
     '''

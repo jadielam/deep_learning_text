@@ -1,3 +1,6 @@
+import torch.nn as nn
+from text_dl.common.devices import use_cuda
+
 class Model(nn.Module):
     '''
     The model class is the parent class for all the 

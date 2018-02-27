@@ -1,4 +1,3 @@
-import itertools.ifilter as ifilter
 import torch
 import torch.nn as nn
 from torch.autograd import Variable

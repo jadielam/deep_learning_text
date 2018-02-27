@@ -37,6 +37,6 @@ def csv_generator(training_path, validation_path, nb_classes, batch_size):
     text_field.build_vocab(*[a for a in datasets if a], vectors = "glove.twitter.27B.200d")
     vocabulary = text_field.vocab
 
-    [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train
+    [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
                                         device = -1) if dts else None for (dts, train) in zip(datasets, [True, False])]
     return vocabulary, training_itr, validation_itr

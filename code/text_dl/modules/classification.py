@@ -1,7 +1,7 @@
 from functools import partial
 import torch
 import torch.nn as nn
-import torcn.nn.functional as F
+import torch.nn.functional as F
 
 from text_dl.modules import Module
 
