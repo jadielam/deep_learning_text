@@ -22,17 +22,8 @@ def model_factory(conf, vocab):
         batch_size = conf['params']['batch_size']
         max_sequence_length = conf['params']['max_sequence_length']
         embeddings = embedding_factory(vocab, train_embedding)
-        model = SimpleMulticlassificationModel(embeddings, batch_size, 
-                                            nb_classes, max_sequence_length)
-        return model
-    elif conf['type'] == 'multiclassification_custom':
-        nb_classes = conf['params']['nb_classes']
-        train_embedding = conf['params']['train_embedding']
-        batch_size = conf['params']['batch_size']
-        max_sequence_length = conf['params']['max_sequence_length']
-        embeddings = embedding_factory(vocab, train_embedding)
         model = CustomMulticlassificationModel(embeddings, batch_size, 
-                                    nb_classes, max_sequence_length)
+                                            nb_classes, max_sequence_length)
         return model
     else:
         raise ValueError("Incorrect model type: {}".format(conf['type']))
