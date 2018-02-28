@@ -17,8 +17,8 @@ class SimpleMulticlassificationModel(Model):
         
         # Modules
         self.encoder = EncoderRNN(embedding, batch_size, bidirectional = True)
-        self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size, nb_classes)
-        self.classifier = Classifier(nb_classes, self.hidden_size * nb_classes, classifier_function = F.sigmoid)
+        self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size, 1)
+        self.classifier = Classifier(nb_classes, self.hidden_size * 1, classifier_function = F.sigmoid)
 
         # Loss
         self.criterion = nn.BCELoss()

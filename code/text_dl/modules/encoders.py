@@ -44,7 +44,7 @@ class EncoderRNN(Module):
         num_directions = 2 if self.bidirectional else 1
         num_layers = self.gru.num_layers
         
-        result = Variable(torch.zeros(num_layers * num_directions, self.batch_size, self.hidden_size))
+        result = Variable(torch.randn(num_layers * num_directions, self.batch_size, self.hidden_size))
         
         if use_cuda:
             return result.cuda()

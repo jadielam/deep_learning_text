@@ -32,7 +32,7 @@ def train(model, optimizer, train_itr, val_itr, nb_epochs):
         loss.backward()
         optimizer.step()
 
-        print("Epoch # {}: training loss - {}".format(train_itr.epoch, total_loss_value / iter_count), end = "\r")
+        print("Epoch # {} - {}/{}: training loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), total_loss_value / iter_count), end = "\r")
         
         if int(train_itr.epoch) == nb_epochs:
             break
@@ -44,10 +44,10 @@ def train(model, optimizer, train_itr, val_itr, nb_epochs):
             iter_count = 0
             previous_epoch = int(train_itr.epoch)
                 
-            print("Epoch # {}: training loss - {} \t validation loss - {}".format(train_itr.epoch, tr_loss_value, val_loss_value))
+            print("Epoch # {} - {}/{}: training loss - {} \t validation loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), tr_loss_value, val_loss_value))
 
     val_loss_value = evaluate(model, val_itr)
-    print("Epoch # {}: training loss - {} \t validation loss - {}".format(train_itr.epoch, tr_loss_value, val_loss_value))
+    print("Epoch # {} - {}/{}: training loss - {} \t validation loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), tr_loss_value, val_loss_value))
 
 
     
@@ -61,5 +61,5 @@ def optimizer_factory(conf, model):
     For now, only return one kind of optimizer
     '''
     lr = conf['params']['lr']
-    return optim.SGD(model.trainable_parameters(), lr = lr)
+    return optim.Adam(model.trainable_parameters(), lr = lr)
 

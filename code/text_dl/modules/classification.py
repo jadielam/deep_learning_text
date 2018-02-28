@@ -48,7 +48,8 @@ class Classifier(Module):
         - output (:obj:`torch.Tensor`)
         '''
         next_t = input_t
-        for i in range(len(self.layers)):
+        for i in range(len(self.layers) - 1):
             next_t = self.activation_function(self.layers[i](next_t))
+        next_t = self.layers[len(self.layers) - 1](next_t)
         output = self.classifier_function(next_t)
         return output
