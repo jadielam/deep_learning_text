@@ -1,3 +1,4 @@
+import torch
 import torchtext.data as data
 from text_dl.common.devices import use_cuda
 
@@ -29,6 +30,7 @@ def csv_generator(training_path, validation_path, nb_classes, batch_size, vocab_
                             init_token = '<sos>', pad_token = '<pad>',
                             unk_token = '<unk>')
     target_field = data.Field(sequential = False, use_vocab = False, 
+                                tensor_type = torch.FloatTensor,
                                 preprocessing = preprocessing_factory(nb_classes))
     fields = [("id", None), ("text", text_field), ("target", target_field)]
     
