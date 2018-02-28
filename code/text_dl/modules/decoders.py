@@ -33,7 +33,7 @@ class AttentionDecoder(Module):
         - encoder_outputs (:obj:`torch.Tensor`): of size (seq_len, batch, hidden_size) othey are the sequence of encoder outputs
 
         Returns:
-        - output (:obj:`torch.Tensor`): of size (batch, hidden_size)
+        - output (:obj:List(`torch.Tensor`)): of size [(batch, hidden_size)] * nb_outputs
         '''
         batch_size = encoder_outputs.size()[1]
         seq_len = encoder_outputs.size()[0]

@@ -42,10 +42,10 @@ class Classifier(Module):
     def forward(self, input_t):
         '''
         Arguments:
-        - input_t_l (:obj:`torch.Tensor`): input tensor to use for classification
+        - input_t_l (:obj:`torch.Tensor`): input tensor to use for classification of size (batch, input_size)
 
         Returns:
-        - output (:obj:`torch.Tensor`)
+        - output (:obj:`torch.Tensor`) of size (batch, nb_classes)
         '''
         next_t = input_t
         for i in range(len(self.layers) - 1):
