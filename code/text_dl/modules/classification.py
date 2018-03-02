@@ -9,9 +9,10 @@ class Classifier(Module):
     '''
     Standard multilayer perceptron classifier.
     '''
-    def __init__(self, nb_classes, input_size, nb_layers = 2,
+    def __init__(self, nb_classes, input_size, nb_layers = 3,
                 classifier_function = partial(F.softmax, 1),
-                activation_function = F.relu):
+                activation_function = F.relu, 
+                hidden_dimension = 1024):
         '''
         Arguments:
         - nb_classes (int): number of classes for classification
@@ -26,7 +27,7 @@ class Classifier(Module):
 
         dims = []
         for i in range(max(nb_layers, 1)):
-            dim_entry = [1024, 1024]
+            dim_entry = [hidden_dimension, hidden_dimension]
             if i == 0: 
                 dim_entry[0] = input_size
             if i == max(nb_layers, 1) - 1:

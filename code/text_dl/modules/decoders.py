@@ -17,8 +17,8 @@ class AttentionDecoder(Module):
         
         self.attn_layers = []
         for i in range(self.nb_outputs):
-            attn1 = nn.Linear(self.hidden_size * 2, self.hidden_size)
-            attn2 = nn.Linear(self.hidden_size, 1)
+            attn1 = nn.Linear(self.hidden_size * 2, self.hidden_size * 2)
+            attn2 = nn.Linear(self.hidden_size * 2, 1)
             self.attn_layers.append((attn1, attn2))
             super(AttentionDecoder, self).add_module("attn1_{}".format(i), attn1)
             super(AttentionDecoder, self).add_module("attn2_{}".format(i), attn2)
@@ -46,8 +46,8 @@ class AttentionDecoder(Module):
             attn1 = self.attn_layers[i][0]
             attn2 = self.attn_layers[i][1]
 
-            attn_weights = F.relu(attn1(final_input))
-            attn_weights = F.softmax(attn2(attn_weights), 1)
+            attn_weights = F.tanh(attn1(final_input))
+            attn_weights = F.softmax(attn2(attn_weights), 0)
             # attn_weights has shape (seq_len, batch, 1)
         
             attn_weights = attn_weights.transpose(0, 1).transpose(1, 2)

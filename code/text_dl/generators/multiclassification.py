@@ -2,7 +2,7 @@ import torch
 import torchtext.data as data
 from text_dl.common.devices import use_cuda
 
-def preprocessing_factory(nb_classes):
+def preprocessing_factory():
     '''
     Factory function that adds nb_classes as outside parameter
     '''
@@ -12,13 +12,10 @@ def preprocessing_factory(nb_classes):
         a list of numbers
         '''
         entries = [float(a) for a in x.split(",")]
-        if len(entries) != nb_classes:
-            raise ValueError("The number of classes is not correct")
         return entries
-    
     return preprocessing
 
-def csv_generator(training_path, validation_path, nb_classes, batch_size, vocab_type = "glove.twitter.27B.200d"):
+def csv_generator(training_path, batch_size, validation_path = None, vocab_type = "glove.twitter.27B.200d"):
     '''
     csv_folder (str): Folder that contains the csv file
     train_suffix (str): Suffix of the csv files with the training data
@@ -31,7 +28,7 @@ def csv_generator(training_path, validation_path, nb_classes, batch_size, vocab_
                             unk_token = '<unk>')
     target_field = data.Field(sequential = False, use_vocab = False, 
                                 tensor_type = torch.FloatTensor,
-                                preprocessing = preprocessing_factory(nb_classes))
+                                preprocessing = preprocessing_factory())
     fields = [("id", None), ("text", text_field), ("target", target_field)]
     
     datasets = [data.TabularDataset(path = a, format = "csv", 

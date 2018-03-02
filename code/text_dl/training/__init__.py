@@ -1,6 +1,10 @@
 from functools import partial
 from torch import optim
 
+from text_dl.factories import optimizers_factory, schedulers_factory, callbacks_factory
+from text_dl.training.statistics import Statistics
+from text_dl.training.callbacks import PrintCallback, ModelSaveCallback
+
 def evaluate(model, val_itr):
     '''
     Returns the total loss of the model on the validation
@@ -16,50 +20,70 @@ def evaluate(model, val_itr):
         total_loss += loss.data.item()
     return total_loss / len(val_itr)
 
-def train(model, optimizer, train_itr, val_itr, nb_epochs):
-    '''
-    Trains a model
-    '''
-    previous_epoch = 0
-    total_loss_value = 0.0
-    iter_count = 0
+class Trainer:
+    def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None):
+        self.nb_epochs = nb_epochs
+        self.optimizer_factory_conf = optimizer
+        self.scheduler_factory_conf = scheduler
 
-    while True:
-        batch = next(train_itr.__iter__())
-        iter_count += 1
-        loss = model.loss(batch.text, batch.target)
-        total_loss_value += loss.data.item()
-        loss.backward()
-        optimizer.step()
+        #TODO: Make this a Set so that I don't get repeated callbacks
+        self.callbacks = []
+        if callbacks is not None:
+            self.callbacks = [callbacks_factory(conf) for conf in callbacks]
+        self.callbacks.append(PrintCallback())
 
-        print("Epoch # {} - {}/{}: training loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), total_loss_value / iter_count), end = "\r")
-        
-        if int(train_itr.epoch) == nb_epochs:
-            break
+    def train(self, model, train_itr, val_itr):
+        '''
+        Trains a model for self.nb_epochs, using the data given by
+        train_itr, and evaluating val_itr
 
-        if int(train_itr.epoch) != previous_epoch:
-            val_loss_value = evaluate(model, val_itr)
-            tr_loss_value = total_loss_value / len(train_itr)
+        Arguments:
+            - model (::obj::`text_dl.models.model.Model`)
+            - train_itr (::obj)
+
+        '''
+        #1. Build optimizer
+        self.optimizer_factory_conf['params']['params'] = model.trainable_parameters()
+        optimizer = optimizers_factory(self.optimizer_factory_conf)
+
+        #2. Build scheduler
+        if self.scheduler_factory_conf is not None:
+            self.scheduler_factory_conf['params']['optimizer'] = optimizer
+            scheduler = schedulers_factory(self.scheduler_factory_conf)
+        else:
+            scheduler = None
+
+        #3. Starting the training process
+        epoch_stats = Statistics(self.nb_epochs)
+        for epoch_idx in range(len(self.nb_epochs)):
             total_loss_value = 0.0
-            iter_count = 0
-            previous_epoch = int(train_itr.epoch)
+            iter_stats = Statistics(len(train_itr))
+            for iter_idx in range(len(train_itr)):
+                batch = next(train_itr.__iter__())
+                loss = model.loss(batch.text, batch.target)
+                total_loss_value += loss.data.item()
+
+                #Update iteration statistics
+                iter_stats.update_stat("train_loss", total_loss_value / (iter_idx + 1))
+                iter_stats.step()
+
+                #Make call to callbacks
+                for callback in self.callbacks:
+                    callback.on_iter_end(iter_idx, epoch_idx, model, iter_stats)
                 
-            print("Epoch # {} - {}/{}: training loss - {} \t validation loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), tr_loss_value, val_loss_value))
+                loss.backward()
+                optimizer.step()
+            
+            #Update epoch statistics
+            val_loss = evaluate(model, val_itr)
+            epoch_stats.update_stat("train_loss", total_loss_value / len(train_itr))
+            epoch_stats.update_stat("val_loss", val_loss)
+            epoch_stats.step()
 
-    val_loss_value = evaluate(model, val_itr)
-    print("Epoch # {} - {}/{}: training loss - {} \t validation loss - {}".format(int(train_itr.epoch), iter_count, len(train_itr), tr_loss_value, val_loss_value))
+            #Make call to callbacks
+            for callback in self.callbacks:
+                callback.on_epoch_end(epoch_idx, model, epoch_stats)
 
-
-    
-def trainer_factory(conf):
-    nb_epochs = conf['params']['nb_epochs']
-    train_f = partial(train, nb_epochs = nb_epochs)
-    return train_f
-
-def optimizer_factory(conf, model):
-    '''
-    For now, only return one kind of optimizer
-    '''
-    lr = conf['params']['lr']
-    return optim.Adam(model.trainable_parameters(), lr = lr)
+            if scheduler is not None:
+                scheduler.step()
 

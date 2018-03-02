@@ -11,23 +11,24 @@
     "trainer": {
         "type": "simple",
         "params": {
-            "nb_epochs": 20
+            "nb_epochs": 20,
+            "optimizer": {
+                "type": "sgd",
+                "params": {
+                    "lr": 0.001
+                }
+            }
         }
     },
     "generator": {
-        "type": "csv_files",
+        "type": "multiclass",
         "params": {
+            "batch_size": 10,
             "training_path": "/data/train.csv",
             "vocab_type": "glove.twitter.27B.200d"
         },
         "preprocessors": [
 
         ]
-    },
-    "optimizer": {
-        "type": "sgd",
-        "params": {
-            "lr": 0.001
-        }
     }
 }

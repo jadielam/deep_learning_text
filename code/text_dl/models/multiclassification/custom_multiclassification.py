@@ -17,7 +17,7 @@ class CustomMulticlassificationModel(Model):
         
         # Modules
         self.encoder = EncoderRNN(embedding, batch_size, bidirectional = True)
-        self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size, 1)
+        self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size, nb_classes)
         self.classifiers = []
         for i in range(self.nb_classes):
             classifier = Classifier(1, self.hidden_size, classifier_function = F.sigmoid)
