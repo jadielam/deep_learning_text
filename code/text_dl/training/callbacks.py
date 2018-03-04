@@ -1,3 +1,5 @@
+import numpy as np
+
 class Callback():
     def __init__(self):
         pass
@@ -17,7 +19,6 @@ class Callback():
     def on_train_end(model, statistics):
         pass
 
-# TODO: Callbacks to implement:
 #1. Print callback
 class PrintCallback(Callback):
     def __init__(self):
@@ -28,7 +29,7 @@ class PrintCallback(Callback):
         total_iters = iter_stats.capacity
         epoch_nb = epoch_idx + 1
         iter_nb = iter_idx + 1
-        print("Epoch # {} - {}/{} - training loss: {0:.4f}".format(epoch_nb, iter_nb, total_iters, tr_loss), end = '\r')
+        print("Epoch # {} - {}/{} - training loss: {0:.4f}".format(epoch_nb, iter_nb, total_iters, tr_loss), end = "\r")
 
     def on_epoch_end(epoch_idx, model, epoch_stats):
         tr_loss = epoch_stats.get_stat(epoch_idx, "train_loss")
@@ -36,18 +37,50 @@ class PrintCallback(Callback):
         total_epochs = epoch_stats.capacity
         epoch_nb = epoch_idx + 1
         print("Epoch # {} - training loss: {0:.4f} - validation loss: {0:.4f}".format(epoch_nb, tr_loss, val_loss))
-        
 
-#2. Statistics save callback
+class HistorySaveCallback(Callback):
+    def __init__(self, output_path = "history.csv", 
+                statistics = ["train_loss", "val_loss"]):
+        super(StatisticsSaveCallback, self).__init__()
+        self.output_path = output_path
+        self.statistics = statistics
+    
+    def on_epoch_end(epoch_idx, model, epoch_stats):
+        if epoch_idx == 0:
+            with open(self.output_path, "a+") as f:
+                f.write(",".join(["epoch"] + statistics))
+                f.write('\n')
+        
+        entries = []
+        for stat_name in self.statistics:
+            try:
+                val = epoch_stats.get_stat(epoch_idx, stat_name)
+            except KeyError:
+                val = None
+            entries.append(val)
+        with open(self.output_path, "a"):
+            f.write(",".join([epoch_idx + 1] + entries))
+            f.write("\n")
 
 #3. Model save callback
 class ModelSaveCallback(Callback):
-    def __init__(self):
+    def __init__(self, model_output_path = "model.pth"):
         super(ModelSaveCallback, self).__init__()
+        self.model_output_path = model_output_path
     
     def on_epoch_end(epoch_idx, model, epoch_stats):
-        #TODO: 
-        #1. Get validation stats and save model if last val is best one
-        #2. If val stats have None values in them, then use trainig stats 
-        #instead.
-        return
+        stat_to_use = 'val_loss'
+        try:
+            current_loss = epoch_stats.get_stat(epoch_idx, stat_to_use)
+            if current_loss is None:
+                stat_to_use = 'train_loss'
+        except KeyError:
+            stat_to_use = "train_loss"
+        
+        try:
+            best_loss_idx = np.argmin([epoch_stats.get_stat(i, stat_to_use) for i in range(epoch_idx)])
+            if best_loss_idx == epoch_idx:
+                torch.save(model.stat_dict(), self.model_output_path)
+        except KeyError:
+            pass
+        

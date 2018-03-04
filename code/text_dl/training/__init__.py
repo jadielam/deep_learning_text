@@ -3,7 +3,7 @@ from torch import optim
 
 from text_dl.factories import optimizers_factory, schedulers_factory, callbacks_factory
 from text_dl.training.statistics import Statistics
-from text_dl.training.callbacks import PrintCallback, ModelSaveCallback
+from text_dl.training.callbacks import PrintCallback, ModelSaveCallback, HistorySaveCallback
 
 def evaluate(model, val_itr):
     '''
@@ -31,6 +31,8 @@ class Trainer:
         if callbacks is not None:
             self.callbacks = [callbacks_factory(conf) for conf in callbacks]
         self.callbacks.append(PrintCallback())
+        self.callbacks.append(ModelSaveCallback())
+        self.callbacks.append(HistorySaveCallback())
 
     def train(self, model, train_itr, val_itr):
         '''
