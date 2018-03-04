@@ -7,6 +7,11 @@ import text_dl.training
 #3. Optimizers and schedulers imports
 from torch import optim
 
+#4. Models
+import text_dl.models
+
+#5. Callbacks
+import text_dl.training.callbacks as callbacks
 
 GENERATORS_D = {
     "multiclass": text_dl.generators.multiclassification.csv_generator
@@ -17,7 +22,7 @@ TRAINERS_D = {
 }
 
 OPTIMIZERS_D = {
-    "adam": optim.Adam
+    "adam": optim.Adam,
     "sgd": optim.SGD,
     "adadelta": optim.Adadelta,
     "adagrad": optim.Adagrad,
@@ -32,7 +37,13 @@ SCHEDULERS_D = {
 }
 
 CALLBACKS_D = {
+    "save_history": callbacks.HistorySaveCallback,
+    "save_model": callbacks.ModelSaveCallback
+}
 
+MODELS_D = {
+    "CustomMulticlassificationModel": text_dl.models.multiclassification.custom_multiclassification.CustomMulticlassificationModel,
+    "SimpleMulticlassificationModel": text_dl.models.multiclassification.simple_multiclassification.SimpleMulticlassificationModel
 }
 
 def generic_factory(type_factory_d, factory_type_s):
@@ -66,6 +77,7 @@ def generic_factory(type_factory_d, factory_type_s):
 
     return factory
 
+models_factory = generic_factory(MODELS_D, "model")
 generators_factory = generic_factory(GENERATORS_D, "generator")
 trainers_factory = generic_factory(TRAINERS_D, "trainer")
 optimizers_factory = generic_factory(OPTIMIZERS_D, "optimizer")

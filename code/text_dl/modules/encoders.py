@@ -10,15 +10,16 @@ class EncoderRNN(Module):
     '''
     Encodes input using an RNN
     '''
-    def __init__(self, embedding,
-                    batch_size,
+    def __init__(self, embedding, hidden_size = None,
                     bidirectional = False):
         super(EncoderRNN, self).__init__()
         self.embedding = embedding
-        self.batch_size = batch_size
         self.bidirectional = bidirectional
+        self.hidden_size = hidden_size
+        if self.hidden_size is None:
+            self.hidden_size = self.embedding.embedding_dim
         self.hidden_size = self.embedding.embedding_dim
-        self.gru = nn.GRU(self.hidden_size, self.hidden_size,
+        self.gru = nn.GRU(self.embedding.embedding_dim, self.hidden_size,
                          bidirectional = bidirectional, 
                          batch_first = False)
         
@@ -34,7 +35,7 @@ class EncoderRNN(Module):
         output, hidden = self.gru(embedded, hidden)
         return output, hidden
         
-    def init_hidden(self, use_cuda):
+    def init_hidden(self, batch_size, use_cuda):
         '''
         Returns the initialized first hidden state.
         
@@ -44,7 +45,7 @@ class EncoderRNN(Module):
         num_directions = 2 if self.bidirectional else 1
         num_layers = self.gru.num_layers
         
-        result = Variable(torch.randn(num_layers * num_directions, self.batch_size, self.hidden_size))
+        result = Variable(torch.randn(num_layers * num_directions, batch_size, self.hidden_size))
         
         if use_cuda:
             return result.cuda()

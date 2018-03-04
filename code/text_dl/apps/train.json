@@ -4,7 +4,6 @@
         "params": {
             "nb_classes": 6,
             "train_embedding": false,
-            "batch_size": 10,
             "max_sequence_length": 300
         }
     },
