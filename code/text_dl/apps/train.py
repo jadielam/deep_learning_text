@@ -3,7 +3,9 @@ import json
 import sys
 
 from text_dl.modules.embeddings import embedding_factory
-from text_dl.factories import generators_factory, trainer_factory, model_factory
+from text_dl.models import models_factory
+from text_dl.training import trainers_factory
+from text_dl.generators import generators_factory
 from text_dl.common.devices import use_cuda
 
 def main():
@@ -29,13 +31,13 @@ def main():
     embeddings = embedding_factory(vocabulary, model_config['train_embedding'])
     model_config['embeddings'] = embeddings
     del model_config['train_embedding']
-    model = model_factory(model_config)
+    model = models_factory(model_config)
     if use_cuda:
         model = model.cuda()
 
     # Trainer's function
     print("Creating trainer")
-    trainer = trainer_factory(trainer_config)
+    trainer = trainers_factory(trainer_config)
 
     # Results of the training
     print("Training...")

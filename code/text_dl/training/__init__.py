@@ -1,9 +1,11 @@
 from functools import partial
 from torch import optim
 
-from text_dl.factories import optimizers_factory, schedulers_factory, callbacks_factory
+from text_dl.common.factories import generic_factory
+
 from text_dl.training.statistics import Statistics
 from text_dl.training.callbacks import PrintCallback, ModelSaveCallback, HistorySaveCallback
+
 
 def evaluate(model, val_itr):
     '''
@@ -88,4 +90,33 @@ class Trainer:
 
             if scheduler is not None:
                 scheduler.step()
+
+TRAINERS_D = {
+    "simple": Trainer
+}
+
+OPTIMIZERS_D = {
+    "adam": optim.Adam,
+    "sgd": optim.SGD,
+    "adadelta": optim.Adadelta,
+    "adagrad": optim.Adagrad,
+    "rmsprop": optim.RMSprop
+}
+
+SCHEDULERS_D = {
+    "lambda": optim.lr_scheduler.LambdaLR,
+    "step": optim.lr_scheduler.StepLR,
+    "multistep": optim.lr_scheduler.MultiStepLR,
+    "exponential": optim.lr_scheduler.ExponentialLR
+}
+
+CALLBACKS_D = {
+    "save_history": callbacks.HistorySaveCallback,
+    "save_model": callbacks.ModelSaveCallback
+}
+
+trainers_factory = generic_factory(TRAINERS_D, "trainer")
+optimizers_factory = generic_factory(OPTIMIZERS_D, "optimizer")
+schedulers_factory = generic_factory(SCHEDULERS_D, "scheduler")
+callbacks_factory = generic_factory(CALLBACKS_D, "callback")
 

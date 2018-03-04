@@ -1,6 +1,6 @@
 {
     "model": {
-        "type": "multiclassification",
+        "type": "SimpleMulticlassificationModel",
         "params": {
             "nb_classes": 6,
             "train_embedding": false,
