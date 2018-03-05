@@ -12,7 +12,8 @@ class Classifier(Module):
     def __init__(self, nb_classes, input_size, nb_layers = 3,
                 classifier_function = partial(F.softmax, 1),
                 activation_function = F.relu, 
-                hidden_dimension = 1024):
+                hidden_dimension = 1024,
+                dropout = 0.2):
         '''
         Arguments:
         - nb_classes (int): number of classes for classification
@@ -34,6 +35,7 @@ class Classifier(Module):
                 dim_entry[1] = nb_classes
             dims.append(dim_entry)
 
+        self.dropout_layer = nn.Dropout(p = dropout)
         self.layers = []
         for i in range(len(dims)):
             linear_layer = nn.Linear(dims[i][0], dims[i][1])
@@ -49,6 +51,7 @@ class Classifier(Module):
         - output (:obj:`torch.Tensor`) of size (batch, nb_classes)
         '''
         next_t = input_t
+        next_t = self.dropout_layer(next_t)
         for i in range(len(self.layers) - 1):
             next_t = self.activation_function(self.layers[i](next_t))
         next_t = self.layers[len(self.layers) - 1](next_t)
