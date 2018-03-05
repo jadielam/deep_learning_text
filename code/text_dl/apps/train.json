@@ -4,7 +4,10 @@
         "params": {
             "nb_classes": 6,
             "train_embedding": false,
-            "max_sequence_length": 300
+            "max_sequence_length": 300,
+            "gru_dropout": 0.2,
+            "classification_dropout": 0.2,
+            "hidden_size": 200
         }
     },
     "trainer": {
@@ -16,7 +19,21 @@
                 "params": {
                     "lr": 0.001
                 }
-            }
+            },
+            "callbacks": [
+                {
+                    "type": "save_history",
+                    "params": {
+                        "output_path": "history.csv"
+                    }
+                },
+                {
+                    "type": "save_model",
+                    "params": {
+                        "model_output_path": "model.pth"
+                    }
+                }
+            ]
         }
     },
     "generator": {
