@@ -30,7 +30,7 @@ class PrintCallback(Callback):
         total_iters = iter_stats.capacity
         epoch_nb = epoch_idx + 1
         iter_nb = iter_idx + 1
-        print("Epoch # {} - {}/{} - training loss: {0:.4f}".format(epoch_nb, iter_nb, total_iters, tr_loss), end = "\r")
+        print("Epoch # {} - {}/{} - training loss: {:.4f}".format(epoch_nb, iter_nb, total_iters, tr_loss), end = "\r")
 
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
         tr_loss = epoch_stats.get_stat(epoch_idx, "train_loss")
@@ -39,7 +39,7 @@ class PrintCallback(Callback):
             val_loss = -1.
         total_epochs = epoch_stats.capacity
         epoch_nb = epoch_idx + 1
-        print("Epoch # {} - training loss: {0:.4f} - validation loss: {0:.4f}".format(epoch_nb, tr_loss, val_loss))
+        print("Epoch # {} - training loss: {:.4f} - validation loss: {:.4f}".format(epoch_nb, tr_loss, val_loss))
 
 class HistorySaveCallback(Callback):
     def __init__(self, output_path = "history.csv", 
