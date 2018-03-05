@@ -28,9 +28,9 @@ def main():
     
     # TODO: This is the only part of the code that is not pure enough.
     # Otherwise, all the factories look nice to me.
-    embeddings = embedding_factory(vocabulary, model_config['train_embedding'])
-    model_config['embeddings'] = embeddings
-    del model_config['train_embedding']
+    embedding = embedding_factory(vocabulary, model_config['params']['train_embedding'])
+    model_config['params']['embedding'] = embedding
+    del model_config['params']['train_embedding']
     model = models_factory(model_config)
     if use_cuda:
         model = model.cuda()

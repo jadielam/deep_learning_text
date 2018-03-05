@@ -1,8 +1,8 @@
 from text_dl.common.factories import generic_factory
-import text_dl.generators.multiclassification
+from .multiclassification import csv_generator as multi_csv_generator
 
 GENERATORS_D = {
-    "multiclass": text_dl.generators.multiclassification.csv_generator
+    "multiclass": multi_csv_generator
 }
 
 generators_factory = generic_factory(GENERATORS_D, "generator")

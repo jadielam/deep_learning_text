@@ -14,7 +14,7 @@ class SimpleMulticlassificationModel(Model):
         self.max_sequence_length = max_sequence_length
         self.hidden_size = hidden_size
         if self.hidden_size is None:
-            self.hidden_size = self.embedding.embedding_dim
+            self.hidden_size = embedding.embedding_dim
         self.nb_classes = nb_classes
         
         # Modules

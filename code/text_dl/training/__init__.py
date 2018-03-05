@@ -16,10 +16,12 @@ def evaluate(model, val_itr):
         return None
 
     total_loss = 0.0
-
+    
+    model.eval()
     for _, batch in enumerate(val_itr):
         loss = model.loss(batch.text, batch.target)
         total_loss += loss.data.item()
+    model.train()
     return total_loss / len(val_itr)
 
 class Trainer:
@@ -59,7 +61,7 @@ class Trainer:
 
         #3. Starting the training process
         epoch_stats = Statistics(self.nb_epochs)
-        for epoch_idx in range(len(self.nb_epochs)):
+        for epoch_idx in range(self.nb_epochs):
             total_loss_value = 0.0
             iter_stats = Statistics(len(train_itr))
             for iter_idx in range(len(train_itr)):
