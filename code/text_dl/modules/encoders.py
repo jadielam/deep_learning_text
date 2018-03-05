@@ -11,17 +11,16 @@ class EncoderRNN(Module):
     Encodes input using an RNN
     '''
     def __init__(self, embedding, hidden_size = None,
-                    bidirectional = False):
+                    bidirectional = False, gru_dropout = 0):
         super(EncoderRNN, self).__init__()
         self.embedding = embedding
         self.bidirectional = bidirectional
         self.hidden_size = hidden_size
         if self.hidden_size is None:
             self.hidden_size = self.embedding.embedding_dim
-        self.hidden_size = self.embedding.embedding_dim
         self.gru = nn.GRU(self.embedding.embedding_dim, self.hidden_size,
                          bidirectional = bidirectional, 
-                         batch_first = False)
+                         batch_first = False, dropout = gru_dropout)
         
     def forward(self, input_t, hidden):
         '''
