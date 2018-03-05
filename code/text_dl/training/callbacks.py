@@ -24,7 +24,10 @@ class Callback():
 class PrintCallback(Callback):
     def __init__(self):
         super(PrintCallback, self).__init__()
-    
+
+    def __hash__(self):
+        return hash(self.__class__.__name__)
+
     def on_iter_end(self, iter_idx, epoch_idx, model, iter_stats):
         tr_loss = iter_stats.get_stat(iter_idx, "train_loss")
         total_iters = iter_stats.capacity
@@ -39,7 +42,8 @@ class PrintCallback(Callback):
             val_loss = -1.
         total_epochs = epoch_stats.capacity
         epoch_nb = epoch_idx + 1
-        print("Epoch # {} - training loss: {:.4f} - validation loss: {:.4f}".format(epoch_nb, tr_loss, val_loss))
+        print("Epoch # {} - training loss: {:.4f} - validation loss: {:.4f}".format(epoch_nb, tr_loss, val_loss))    
+
 
 class HistorySaveCallback(Callback):
     def __init__(self, output_path = "history.csv", 
@@ -47,6 +51,9 @@ class HistorySaveCallback(Callback):
         super(HistorySaveCallback, self).__init__()
         self.output_path = output_path
         self.statistics = statistics
+    
+    def __hash__(self):
+        return hash(self.__class__.__name__)
     
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
         if epoch_idx == 0:
@@ -70,6 +77,9 @@ class ModelSaveCallback(Callback):
     def __init__(self, model_output_path = "model.pth"):
         super(ModelSaveCallback, self).__init__()
         self.model_output_path = model_output_path
+    
+    def __hash__(self):
+        return hash(self.__class__.__name__)
     
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
         stat_to_use = 'val_loss'

@@ -30,13 +30,12 @@ class Trainer:
         self.optimizer_factory_conf = optimizer
         self.scheduler_factory_conf = scheduler
 
-        #TODO: Make this a Set so that I don't get repeated callbacks
-        self.callbacks = []
+        self.callbacks = set()
         if callbacks is not None:
-            self.callbacks = [callbacks_factory(conf) for conf in callbacks]
-        self.callbacks.append(PrintCallback())
-        self.callbacks.append(ModelSaveCallback())
-        self.callbacks.append(HistorySaveCallback())
+            self.callbacks = set([callbacks_factory(conf) for conf in callbacks])
+        self.callbacks.add(PrintCallback())
+        self.callbacks.add(ModelSaveCallback())
+        self.callbacks.add(HistorySaveCallback())
 
     def train(self, model, train_itr, val_itr):
         '''
