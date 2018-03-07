@@ -29,6 +29,10 @@ class EncoderRNN(Module):
         - input_t (:obj:`torch.Tensor`): Tensor of shape (N, W) N is mini-batch size, W is number of indices to extract per minibatch.
         - hidden (:obj:`torch.Tensor`): the hidden state of the previous call to forward. The initial hidden state is given by self.init_hidden()
                                         The hidden dimension is (num_layers * num_directions, batch_size, hidden_size)
+        
+        Returns: 
+        - output (:obj:`torch.Tensor`): (seq_len, batch, hidden_size * num_directions)
+        - hidden (:obj:`torch.Tensor`): (num_layers * num_directions, batch_size, hidden_size)
         '''
         embedded = self.embedding(input_t)
         output, hidden = self.gru(embedded, hidden)
@@ -44,7 +48,7 @@ class EncoderRNN(Module):
         num_directions = 2 if self.bidirectional else 1
         num_layers = self.gru.num_layers
         
-        result = Variable(torch.randn(num_layers * num_directions, batch_size, self.hidden_size))
+        result = Variable(torch.zeros(num_layers * num_directions, batch_size, self.hidden_size))
         
         if use_cuda:
             return result.cuda()

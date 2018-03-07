@@ -25,9 +25,6 @@ class PrintCallback(Callback):
     def __init__(self):
         super(PrintCallback, self).__init__()
 
-    def __hash__(self):
-        return hash(self.__class__.__name__)
-
     def on_iter_end(self, iter_idx, epoch_idx, model, iter_stats):
         tr_loss = iter_stats.get_stat(iter_idx, "train_loss")
         total_iters = iter_stats.capacity
@@ -53,7 +50,10 @@ class HistorySaveCallback(Callback):
         self.statistics = statistics
     
     def __hash__(self):
-        return hash(self.__class__.__name__)
+        return 0
+    
+    def __eq__(self, other):
+        return isinstance(other, HistorySaveCallback)
     
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
         if epoch_idx == 0:
@@ -79,7 +79,10 @@ class ModelSaveCallback(Callback):
         self.model_output_path = model_output_path
     
     def __hash__(self):
-        return hash(self.__class__.__name__)
+        return 0
+
+    def __eq__(self, other):
+        return isinstance(other, ModelSaveCallback)
     
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
         stat_to_use = 'val_loss'
