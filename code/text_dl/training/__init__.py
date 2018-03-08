@@ -73,10 +73,10 @@ class Trainer:
 
                 batch = next(train_itr.__iter__())
                 loss = model.loss(batch.text, batch.target)
-                total_loss_value += loss.data.item()
+                #total_loss_value += loss.data.item()
 
                 #Update iteration statistics and gradients
-                iter_stats.update_stat("train_loss", total_loss_value / (iter_idx + 1))
+                #iter_stats.update_stat("train_loss", total_loss_value / (iter_idx + 1))
                 iter_stats.step()
                 loss.backward()
                 optimizer.step()
