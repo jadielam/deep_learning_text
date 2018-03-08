@@ -39,7 +39,10 @@ class PrintCallback(Callback):
         self.iter_times.append(iter_elapsed_time)
         average_iter_time = np.mean(self.iter_times)
 
-        tr_loss = iter_stats.get_stat(iter_idx, "train_loss")
+        try:
+            tr_loss = iter_stats.get_stat(iter_idx, "train_loss")
+        except KeyError:
+            tr_loss = -1
         total_iters = iter_stats.capacity
         epoch_nb = epoch_idx + 1
         iter_nb = iter_idx + 1
@@ -52,7 +55,10 @@ class PrintCallback(Callback):
         epoch_end_time = time.time()
         epoch_elapsed_time = epoch_end_time - self.epoch_start_time
 
-        tr_loss = epoch_stats.get_stat(epoch_idx, "train_loss")
+        try:
+            tr_loss = epoch_stats.get_stat(epoch_idx, "train_loss")
+        except KeyError:
+            tr_loss = -1
         val_loss = epoch_stats.get_stat(epoch_idx, "val_loss")
         if val_loss is None:
             val_loss = -1.
