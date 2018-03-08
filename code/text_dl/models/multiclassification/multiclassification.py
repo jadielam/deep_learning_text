@@ -35,10 +35,9 @@ class MulticlassificationModel(Model):
         '''
         batch_size = input_t.size()[1]
         initial_hidden = self.encoder.init_hidden(batch_size, use_cuda)
-        encoder_output, hidden = self.encoder(input_t, initial_hidden)
-        attn_applied = self.decoder(hidden, encoder_output)
-        attn_applied = torch.cat(attn_applied, 1)
-        classification = self.classifier(attn_applied)
+        _, hidden = self.encoder(input_t, initial_hidden)
+        flattened_hidden = hidden.transpose(0, 1).contiguous().view(batch_size, -1)
+        classification = self.classifier(flattened_hidden)
         return classification
 
     def loss(self, input_t, ground_truth):
