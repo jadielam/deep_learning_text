@@ -25,6 +25,7 @@ class Callback():
 class PrintCallback(Callback):
     def __init__(self):
         super(PrintCallback, self).__init__()
+        self.iter_times = []
 
     def on_epoch_begin(self, epoch_idx, model, epoch_stats):
         self.epoch_start_time = time.time()
@@ -34,7 +35,9 @@ class PrintCallback(Callback):
 
     def on_iter_end(self, iter_idx, epoch_idx, model, iter_stats):
         iter_end_time = time.time()
-        iter_elapsed_time = iter_end_time = self.iter_start_time
+        iter_elapsed_time = iter_end_time - self.iter_start_time
+        self.iter_times.append(iter_elapsed_time)
+        average_iter_time = np.mean(self.iter_times)
 
         tr_loss = iter_stats.get_stat(iter_idx, "train_loss")
         total_iters = iter_stats.capacity
@@ -42,7 +45,7 @@ class PrintCallback(Callback):
         iter_nb = iter_idx + 1
         current_time = time.time()
         
-        epoch_estimated_time_remaining = (total_iters - iter_nb) * iter_elapsed_time
+        epoch_estimated_time_remaining = (total_iters - iter_nb) * average_iter_time
         print("Epoch # {} - {}/{} - time remaining: {:.2f} - training loss: {:.4f}".format(epoch_nb, iter_nb, total_iters, epoch_estimated_time_remaining, tr_loss), end = "\r")
 
     def on_epoch_end(self, epoch_idx, model, epoch_stats):
