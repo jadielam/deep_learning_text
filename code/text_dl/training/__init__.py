@@ -61,23 +61,29 @@ class Trainer:
         #3. Starting the training process
         epoch_stats = Statistics(self.nb_epochs)
         for epoch_idx in range(self.nb_epochs):
+            
+            for callback in self.callbacks:
+                callback.on_epoch_begin(epoch_idx, model, epoch_stats)
+
             total_loss_value = 0.0
             iter_stats = Statistics(len(train_itr))
             for iter_idx in range(len(train_itr)):
+                for callback in self.callbacks:
+                    callback.on_iter_begin(iter_idx, epoch_idx, model, iter_stats)
+
                 batch = next(train_itr.__iter__())
                 loss = model.loss(batch.text, batch.target)
                 total_loss_value += loss.data.item()
 
-                #Update iteration statistics
+                #Update iteration statistics and gradients
                 iter_stats.update_stat("train_loss", total_loss_value / (iter_idx + 1))
                 iter_stats.step()
+                loss.backward()
+                optimizer.step()
 
                 #Make call to callbacks
                 for callback in self.callbacks:
                     callback.on_iter_end(iter_idx, epoch_idx, model, iter_stats)
-                
-                loss.backward()
-                optimizer.step()
             
             #Update epoch statistics
             val_loss = evaluate(model, val_itr)
@@ -85,12 +91,13 @@ class Trainer:
             epoch_stats.update_stat("val_loss", val_loss)
             epoch_stats.step()
 
+            if scheduler is not None:
+                scheduler.step()
+            
             #Make call to callbacks
             for callback in self.callbacks:
                 callback.on_epoch_end(epoch_idx, model, epoch_stats)
 
-            if scheduler is not None:
-                scheduler.step()
 
 TRAINERS_D = {
     "simple": Trainer
