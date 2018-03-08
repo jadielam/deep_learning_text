@@ -47,13 +47,17 @@ class CustomMulticlassificationModel(Model):
         encoder_output, hidden = self.encoder(input_t, initial_hidden)
         attn_applied = self.decoder(hidden, encoder_output)
         #attn_applied = torch.cat(attn_applied, 1)
-        outputs = []
+        if use_cuda:
+            outputs = torch.zeros((self.nb_classes, batch_size, 1)).cuda()
+        else:
+            outputs = torch.zeros((self.nb_classes, batch_size, 1))
+
         for i in range(len(self.classifiers)):
-            with cuda.stream(self.streams([i])):
+            with cuda.stream(self.streams[i]):
                 input = attn_applied[i]
                 output = self.classifiers[i](input)
                 #output has shape (batch, 1)
-                outputs.append(output)
+                outputs[i] = output
 
         return torch.cat(outputs, 1)
 
