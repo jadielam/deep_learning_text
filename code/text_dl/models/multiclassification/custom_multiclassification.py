@@ -31,9 +31,6 @@ class CustomMulticlassificationModel(Model):
             self.classifiers.append(classifier)
             super(CustomMulticlassificationModel, self).add_module("classifier_{}".format(i), classifier)
 
-        # Streams
-        self.streams = [cuda.Stream() for _ in range(self.nb_classes)]
-
         # Loss
         self.criterion = nn.BCELoss()
         
@@ -53,15 +50,12 @@ class CustomMulticlassificationModel(Model):
         else:
             outputs = torch.zeros((self.nb_classes, batch_size))
 
-        cuda.synchronize()
         for i in range(len(self.classifiers)):
-            with cuda.stream(self.streams[i]):
-                input = attn_applied[i]
-                output = self.classifiers[i](input)
-                #output has shape (batch, 1)
-                outputs[i] = output.squeeze()
+            input = attn_applied[i]
+            output = self.classifiers[i](input)
+            #output has shape (batch, 1)
+            outputs[i] = output.squeeze()
         
-        cuda.synchronize()
         return outputs.transpose(0, 1)
 
     def loss(self, input_t, ground_truth):
