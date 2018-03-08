@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.cuda as cuda
 import torch.nn.functional as F
 from text_dl.models.model import Model
 from text_dl.common.devices import use_cuda
@@ -29,6 +30,9 @@ class CustomMulticlassificationModel(Model):
             self.classifiers.append(classifier)
             super(CustomMulticlassificationModel, self).add_module("classifier_{}".format(i), classifier)
 
+        # Streams
+        self.streams = [cuda.Stream() for _ in range(self.nb_classes)]
+
         # Loss
         self.criterion = nn.BCELoss()
         
@@ -45,10 +49,11 @@ class CustomMulticlassificationModel(Model):
         #attn_applied = torch.cat(attn_applied, 1)
         outputs = []
         for i in range(len(self.classifiers)):
-            input = attn_applied[i]
-            output = self.classifiers[i](input)
-            #output has shape (batch, 1)
-            outputs.append(output)
+            with cuda.stream(self.streams([i])):
+                input = attn_applied[i]
+                output = self.classifiers[i](input)
+                #output has shape (batch, 1)
+                outputs.append(output)
 
         return torch.cat(outputs, 1)
 
