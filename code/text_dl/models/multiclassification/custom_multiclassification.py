@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.cuda as cuda
 import torch.nn.functional as F
+from torch.autograd import Variable
 from text_dl.models.model import Model
 from text_dl.common.devices import use_cuda
 from text_dl.modules.encoders import EncoderRNN
@@ -48,9 +49,9 @@ class CustomMulticlassificationModel(Model):
         attn_applied = self.decoder(hidden, encoder_output)
         #attn_applied = torch.cat(attn_applied, 1)
         if use_cuda:
-            outputs = torch.zeros((self.nb_classes, batch_size, 1)).cuda()
+            outputs = Variable(torch.zeros((self.nb_classes, batch_size, 1))).cuda()
         else:
-            outputs = torch.zeros((self.nb_classes, batch_size, 1))
+            outputs = Variable(torch.zeros((self.nb_classes, batch_size, 1)))
 
         for i in range(len(self.classifiers)):
             with cuda.stream(self.streams[i]):
