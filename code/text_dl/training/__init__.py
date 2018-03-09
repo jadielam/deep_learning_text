@@ -1,4 +1,5 @@
 from functools import partial
+import torch
 from torch import optim
 
 from text_dl.common.factories import generic_factory
@@ -25,7 +26,8 @@ def evaluate(model, val_itr):
     return total_loss / len(val_itr)
 
 class Trainer:
-    def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None):
+    def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None,
+                model_weights_path = None):
         self.nb_epochs = nb_epochs
         self.optimizer_factory_conf = optimizer
         self.scheduler_factory_conf = scheduler
@@ -37,6 +39,8 @@ class Trainer:
         self.callbacks.add(ModelSaveCallback())
         self.callbacks.add(HistorySaveCallback())
 
+        self.model_weights_path = model_weights_path
+
     def train(self, model, train_itr, val_itr):
         '''
         Trains a model for self.nb_epochs, using the data given by
@@ -47,6 +51,12 @@ class Trainer:
             - train_itr (::obj)
 
         '''
+
+        #0. Load weights if present
+        if self.model_weights_path is not None:
+            model_weights = torch.load(self.model_weights_path)
+            model.load_state_dict(model_weights)
+
         #1. Build optimizer
         self.optimizer_factory_conf['params']['params'] = model.trainable_parameters()
         optimizer = optimizers_factory(self.optimizer_factory_conf)

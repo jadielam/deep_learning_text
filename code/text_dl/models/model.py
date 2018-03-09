@@ -7,11 +7,7 @@ class Model(nn.Module):
     The model class is the parent class for all the 
     model classes.
     '''
-    def __init__(self, model_weights_path = None):
-        if not model_weights_path is None:
-            weights = torch.load(model_weights_path)
-            self.load_state_dict(weights)
-        
+    def __init__(self):
         super(Model, self).__init__()
         
     def loss(self, input_t, ground_truth):
