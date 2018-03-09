@@ -11,8 +11,8 @@ class HierarchicalMulticlassificationModel(Model):
     def __init__(self, embedding, nb_classes, max_sentence_length = 300, max_doc_length = 20,
                 gru_dropout = 0, **kwargs):
         
-        
         #1. Initiliazing modules
+        super(HierarchicalMulticlassificationModel, self).__init__(**kwargs)
         self.hidden_size = embedding.embedding_dim
         self.sentence_encoder = EncoderRNN(embedding, bidirectional = True, 
                                             hidden_size = self.hidden_size, 
@@ -30,7 +30,7 @@ class HierarchicalMulticlassificationModel(Model):
         self.criterion = nn.BCELoss()
 
         #3. Initializing other variables
-        super(HierarchicalMulticlassificationModel, self).__init__(**kwargs)
+        
 
     
     def forward(self, input_t):

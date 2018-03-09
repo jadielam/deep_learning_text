@@ -12,6 +12,7 @@ class MulticlassificationModel(Model):
                 hidden_size = None, classifier_layers = 3, classifier_hidden = 1024,
                 gru_dropout = 0, classification_dropout = 0.2, **kwargs):
         
+        super(MulticlassificationModel, self).__init__(**kwargs)
         self.max_sequence_length = max_sequence_length
         self.hidden_size = hidden_size
         if self.hidden_size is None:
@@ -26,7 +27,6 @@ class MulticlassificationModel(Model):
 
         # Loss
         self.criterion = nn.BCELoss()
-        super(MulticlassificationModel, self).__init__(**kwargs)
         
     def forward(self, input_t):
         '''
