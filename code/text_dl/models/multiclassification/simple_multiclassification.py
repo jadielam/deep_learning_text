@@ -11,7 +11,7 @@ class SimpleMulticlassificationModel(Model):
     def __init__(self, embedding, nb_classes, max_sequence_length = 300,
                 hidden_size = None, classifier_layers = 3, classifier_hidden = 1024,
                 gru_dropout = 0, classification_dropout = 0.2):
-        super(SimpleMulticlassificationModel, self).__init__()
+        
         self.max_sequence_length = max_sequence_length
         self.hidden_size = hidden_size
         if self.hidden_size is None:
@@ -23,10 +23,11 @@ class SimpleMulticlassificationModel(Model):
         self.decoder = AttentionDecoder(max_sequence_length, self.hidden_size * 2, 1)
         self.classifier = Classifier(nb_classes, self.hidden_size * 2, classifier_function = F.sigmoid,
                                     nb_layers = classifier_layers, hidden_dimension = classifier_hidden,
-                                    dropout = classification_dropout)
+                                    dropout = classification_dropout, **kwargs)
 
         # Loss
         self.criterion = nn.BCELoss()
+        super(SimpleMulticlassificationModel, self).__init__(**kwargs)
         
     def forward(self, input_t):
         '''

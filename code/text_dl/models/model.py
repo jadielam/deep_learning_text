@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from text_dl.common.devices import use_cuda
 
@@ -6,7 +7,11 @@ class Model(nn.Module):
     The model class is the parent class for all the 
     model classes.
     '''
-    def __init__(self):
+    def __init__(self, model_weights_path = None):
+        if not model_weights_path is None:
+            weights = torch.load(model_weights_path)
+            self.load_state_dict(weights)
+        
         super(Model, self).__init__()
         
     def loss(self, input_t, ground_truth):

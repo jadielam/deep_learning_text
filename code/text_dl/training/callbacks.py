@@ -64,7 +64,7 @@ class PrintCallback(Callback):
             val_loss = -1.
         total_epochs = epoch_stats.capacity
         epoch_nb = epoch_idx + 1
-        print("Epoch # {} - seconds: {:.2f} - training loss: {:.4f} - validation loss: {:.4f}".format(epoch_elapsed_time, epoch_nb, tr_loss, val_loss))    
+        print("Epoch # {} - seconds: {:.2f} - training loss: {:.4f} - validation loss: {:.4f}".format(epoch_nb, epoch_elapsed_time, tr_loss, val_loss))    
 
 
 class HistorySaveCallback(Callback):

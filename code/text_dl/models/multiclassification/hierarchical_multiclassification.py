@@ -9,8 +9,8 @@ from text_dl.modules.classification import Classifier
 
 class HierarchicalMulticlassificationModel(Model):
     def __init__(self, embedding, nb_classes, max_sentence_length = 300, max_doc_length = 20,
-                gru_dropout = 0):
-        super(HierarchicalMulticlassificationModel, self).__init__()
+                gru_dropout = 0, **kwargs):
+        
         
         #1. Initiliazing modules
         self.hidden_size = embedding.embedding_dim
@@ -30,6 +30,7 @@ class HierarchicalMulticlassificationModel(Model):
         self.criterion = nn.BCELoss()
 
         #3. Initializing other variables
+        super(HierarchicalMulticlassificationModel, self).__init__(**kwargs)
 
     
     def forward(self, input_t):
