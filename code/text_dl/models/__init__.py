@@ -6,10 +6,15 @@ from text_dl.models.multiclassification.simple_multiclassification import Simple
 from text_dl.models.multiclassification.custom_multiclassification import CustomMulticlassificationModel
 from text_dl.models.multiclassification.multiclassification import MulticlassificationModel
 
+from text_dl.models.classification.classification import ClassificationModel
+from text_dl.models.classification.attention_classification import AttentionClassificationModel
+
 MODELS_D = {
     "CustomMulticlassificationModel": CustomMulticlassificationModel,
     "SimpleMulticlassificationModel": SimpleMulticlassificationModel,
-    "MulticlassificationModel": MulticlassificationModel
+    "MulticlassificationModel": MulticlassificationModel,
+    "ClassificationModel": ClassificationModel,
+    "AttentionClassificationModel": AttentionClassificationModel
 }
 
 models_factory = generic_factory(MODELS_D, "model")

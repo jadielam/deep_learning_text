@@ -17,11 +17,12 @@ def preprocessing_factory():
 
 def csv_generator(training_path, batch_size, validation_path = None, vocab_type = "glove.twitter.27B.200d"):
     '''
-    csv_folder (str): Folder that contains the csv file
-    train_suffix (str): Suffix of the csv files with the training data
-    val_suffix (str): Suffix of the csv files with the validation data
-    nb_classes (int): Number of classes in the classification
-    batch_size (int): Size of the batch for the iterator
+    Arguments:
+
+    - training_path (str): path to the csv training file
+    - batch_size (int): size of the batch
+    - validation_path (str): path to the csv of the validation file
+    - vocab_type (str): Indicates the pretrained word vectors type that will be used.
     '''
     text_field = data.Field(sequential = True, eos_token = '<eos>',
                             init_token = '<sos>', pad_token = '<pad>',
