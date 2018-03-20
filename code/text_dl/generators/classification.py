@@ -2,24 +2,6 @@ import torch
 import torchtext.data as data
 from text_dl.common.devices import use_cuda
 
-#TODO: For now this is a hack to get this working quick.
-# Later on, take a look at this sample code to figure out how
-# to get this working in a less magical manner
-# https://discuss.pytorch.org/t/how-to-do-multi-label-classification-with-torchtext/11571
-
-def preprocessing_factory():
-    '''
-    Factory function that adds nb_classes as outside parameter
-    '''
-    def preprocessing(x):
-        '''
-        Converts a comma separated string of numbers into 
-        a list of numbers
-        '''
-        entries = [float(a) for a in x.split(",")]
-        return entries
-    return preprocessing
-
 def csv_generator(training_path, batch_size, validation_path = None, vocab_type = "glove.twitter.27B.200d"):
     '''
     Arguments:
@@ -33,9 +15,8 @@ def csv_generator(training_path, batch_size, validation_path = None, vocab_type 
                             init_token = '<sos>', pad_token = '<pad>',
                             unk_token = '<unk>')
     target_field = data.Field(sequential = False, use_vocab = False, 
-                                tensor_type = torch.FloatTensor,
-                                preprocessing = preprocessing_factory())
-    fields = [("id", None), ("text", text_field), ("target", target_field)]
+                                tensor_type = torch.LongTensor)
+    fields = [("text", text_field), ("target", target_field)]
     
     datasets = [data.TabularDataset(path = a, format = "csv", 
                                     fields = fields, skip_header = True) if a else None for a in 

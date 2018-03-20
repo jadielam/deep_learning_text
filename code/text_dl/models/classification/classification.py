@@ -1,3 +1,4 @@
+from functools import partial
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -21,7 +22,7 @@ class ClassificationModel(Model):
         
         # Modules
         self.encoder = EncoderRNN(embedding, bidirectional = True, hidden_size = hidden_size, gru_dropout = gru_dropout)
-        self.classifier = Classifier(nb_classes, self.hidden_size * 2, classifier_function = F.softmax,
+        self.classifier = Classifier(nb_classes, self.hidden_size * 2,
                                     nb_layers = classifier_layers, hidden_dimension = classifier_hidden,
                                     dropout = classification_dropout)
 

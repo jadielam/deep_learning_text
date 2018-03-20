@@ -10,7 +10,7 @@ class Classifier(Module):
     Standard multilayer perceptron classifier.
     '''
     def __init__(self, nb_classes, input_size, nb_layers = 3,
-                classifier_function = partial(F.softmax, 1),
+                classifier_function = partial(F.softmax, dim = 1),
                 activation_function = F.relu, 
                 hidden_dimension = 1024,
                 dropout = 0.2):
