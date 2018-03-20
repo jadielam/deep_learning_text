@@ -27,7 +27,7 @@ class ClassificationModel(Model):
                                     dropout = classification_dropout)
 
         # Loss
-        self.criterion = nn.CrossEntropyLoss()
+        self.criterion = nn.NLLLoss()
         
     def forward(self, input_t):
         '''
