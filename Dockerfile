@@ -50,7 +50,7 @@ RUN pip install torchtext
 RUN pip install pandas
 RUN pip install nltk
 RUN python -m nltk.downloader perluniprops nonbreaking_prefixes
-
+RUN pip install scikit-learn
 
 #WORKDIR /workspace
 #RUN chmod -R a+w /workspace
