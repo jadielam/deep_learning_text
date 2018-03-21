@@ -61,12 +61,18 @@ def main():
     model.load_state_dict(model_weights)
     model.eval()
 
-    query_text = "How do I get to Magic Kingdom?"
-    batch = transform_query(query_text, text_field, dataset)
-    prediction = model.forward(batch)
-    print(prediction)
+    query_text = None
+    while True:
+        query_text = input("Your question: ")
+        if query_text == "exit":
+            break
+        batch = transform_query(query_text, text_field, dataset)
+        prediction = model.forward(batch)
+        print(prediction)
+        maximum = torch.max(prediction, 1)
+        arg_max = maximum[1][0]
+        print(labels_intent[arg_max])    
 
-    maximum = torch.max(prediction, 1)
-    arg_max = maximum[1][0]
-    print(labels_intent[arg_max])
+
+    
     
