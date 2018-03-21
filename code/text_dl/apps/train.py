@@ -43,5 +43,6 @@ def main():
     print("Training...")
     trainer.train(model, train_itr, val_itr)
 
+
 if __name__ == "__main__":
     main()

@@ -27,25 +27,8 @@ def evaluate(model, val_itr):
         loss = model.loss(batch.text, batch.target)
         total_loss += loss.data.item()
     
-    #2. Calculating the confusion matrix
-    targets_l = []
-    preds_labels_l = []
-
-    for _, batch in enumerate(val_itr):
-        targets = batch.target
-        preds = model.forward(batch.text)
-        targets_np = targets.numpy().squeeze()
-        targets_l.append(targets_np)
-        preds_np = preds.numpy()
-        preds_labels = np.amax(preds_np, axis = 1).squeeze()
-        preds_labels_l.append(preds_labels)
-
-    targets_all = np.concatenate(targets_l)
-    preds_all = np.concatenate(preds_labels_l)
-    cm = confusion_matrix(targets_all, preds_all)
-
     model.train()
-    return total_loss / len(val_itr), cm
+    return total_loss / len(val_itr)
 
 class Trainer:
     def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None,
@@ -118,7 +101,7 @@ class Trainer:
                     callback.on_iter_end(iter_idx, epoch_idx, model, iter_stats)
             
             #Update epoch statistics
-            val_loss, cm = evaluate(model, val_itr)
+            val_loss = evaluate(model, val_itr)
             print(cm)
             epoch_stats.update_stat("train_loss", total_loss_value / len(train_itr))
             epoch_stats.update_stat("val_loss", val_loss)
