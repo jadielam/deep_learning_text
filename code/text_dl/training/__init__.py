@@ -102,7 +102,6 @@ class Trainer:
             
             #Update epoch statistics
             val_loss = evaluate(model, val_itr)
-            print(cm)
             epoch_stats.update_stat("train_loss", total_loss_value / len(train_itr))
             epoch_stats.update_stat("val_loss", val_loss)
             epoch_stats.step()

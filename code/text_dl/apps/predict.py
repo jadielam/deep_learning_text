@@ -70,9 +70,9 @@ def main():
             break
         batch = transform_query(query_text, (name, text_field), dataset)
         prediction = model.forward(batch.text)
-        print(prediction)
         maximum = torch.max(prediction, 1)
         arg_max = maximum[1][0]
+        arg_max = arg_max.data.item()
         print(labels_intent[arg_max])
 
 if __name__ == "__main__":

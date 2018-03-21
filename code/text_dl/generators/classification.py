@@ -22,7 +22,7 @@ def csv_generator(training_path, batch_size, validation_path = None, vocab_type 
                                     fields = fields, skip_header = True) if a else None for a in 
                                     [training_path, validation_path]]
     text_field.build_vocab(*[a for a in datasets if a], vectors = vocab_type)
-    vocabulary = text_field.vocab(vectors = vocab_type)
+    vocabulary = text_field.vocab
 
     device_type = None if use_cuda else -1
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
