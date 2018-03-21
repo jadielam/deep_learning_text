@@ -8,7 +8,7 @@ import torchtext.data as data
 
 from text_dl.inference import fields_factory
 from text_dl.modules.embeddings import embedding_factory
-from text_dl.models import model_factory
+from text_dl.models import models_factory
 from text_dl.common.devices import use_cuda
 
 #TODO: FOr now I will do this here. Later I will redraw it to
@@ -33,7 +33,7 @@ def read_labels(labels_file_path):
     labels_intent = {}
     for row in reader:
         key, value = row
-        labels_intent[key] = value
+        labels_intent[int(key)] = value
     
     return labels_intent
 
@@ -56,7 +56,9 @@ def main():
     model_config['params']['embedding'] = embedding
     del model_config['params']['train_embedding']
 
-    model = model_factory(model_config)
+    model = models_factory(model_config)
+    if use_cuda:
+        model.cuda()
     model_weights = torch.load(model_weights_path)
     model.load_state_dict(model_weights)
     model.eval()
@@ -66,12 +68,15 @@ def main():
         query_text = input("Your question: ")
         if query_text == "exit":
             break
-        batch = transform_query(query_text, text_field, dataset)
-        prediction = model.forward(batch)
+        batch = transform_query(query_text, (name, text_field), dataset)
+        prediction = model.forward(batch.text)
         print(prediction)
         maximum = torch.max(prediction, 1)
         arg_max = maximum[1][0]
-        print(labels_intent[arg_max])    
+        print(labels_intent[arg_max])
+
+if __name__ == "__main__":
+    main()
 
 
     
