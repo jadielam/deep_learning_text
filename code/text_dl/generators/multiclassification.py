@@ -2,6 +2,11 @@ import torch
 import torchtext.data as data
 from text_dl.common.devices import use_cuda
 
+#TODO: For now this is a hack to get this working quick.
+# Later on, take a look at this sample code to figure out how
+# to get this working in a less magical manner
+# https://discuss.pytorch.org/t/how-to-do-multi-label-classification-with-torchtext/11571
+
 def preprocessing_factory():
     '''
     Factory function that adds nb_classes as outside parameter
