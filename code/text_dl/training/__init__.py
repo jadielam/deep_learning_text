@@ -32,7 +32,7 @@ def evaluate(model, val_itr):
 
 class Trainer:
     def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None,
-                model_weights_path = None):
+                model_weights_path = None, input_transform_f = lambda x : x):
         self.nb_epochs = nb_epochs
         self.optimizer_factory_conf = optimizer
         self.scheduler_factory_conf = scheduler
@@ -45,6 +45,7 @@ class Trainer:
         self.callbacks.add(HistorySaveCallback())
 
         self.model_weights_path = model_weights_path
+        self.input_transform_f = input_transform_f
 
     def train(self, model, train_itr, val_itr):
         '''
@@ -87,7 +88,7 @@ class Trainer:
                     callback.on_iter_begin(iter_idx, epoch_idx, model, iter_stats)
 
                 batch = next(train_itr.__iter__())
-                loss = model.loss(batch.text, batch.target)
+                loss = model.loss(self.input_transform_f(batch), batch.target)
                 total_loss_value += loss.data.item()
 
                 #Update iteration statistics and gradients

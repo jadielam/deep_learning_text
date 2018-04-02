@@ -28,7 +28,7 @@ class MultiEmbedding(nn.Module):
 
         #2. Assign the embeddings to the elementwise layer
         self.elementwise_embeddings = Elementwise('concat', embeddings)
-        self.embedding_size = (sum(hidden_sizes))
+        self.embedding_dim = (sum(hidden_sizes))
 
     def forward(self, input_t):
         '''

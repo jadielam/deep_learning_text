@@ -37,6 +37,7 @@ def main():
 
     # Trainer's function
     print("Creating trainer")
+    trainer_config['input_transform_f'] = lambda x: x.text
     trainer = trainers_factory(trainer_config)
 
     # Results of the training
