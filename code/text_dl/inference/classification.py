@@ -1,5 +1,6 @@
 import torch
 import torchtext.data as data
+from text_dl.preprocessing.vectors import OneHotEncoderVectors
 
 def extra_vocabs_fields_generator(training_path, batch_size = 1, 
                                     validation_path = None, 
