@@ -27,13 +27,13 @@ class Elementwise(nn.ModuleList):
               the number of modules in the list of modules
         '''
         dim = input_t.dim()
-        inputs = [feat.squeeze(dim) for feat in input_t.split(1, dim)]
+        inputs = [feat.squeeze(2) for feat in input_t.split(1, dim = 2)]
         assert len(self) == len(inputs)
         outputs = [f(x) for f, x in zip(self, inputs)]
         if self.merge == 'first':
             return outputs[0]
         elif self.merge == 'concat' or self.merge == 'mlp':
-            return torch.cat(outputs, dim)
+            return torch.cat(outputs, 2)
         elif self.merge == 'sum':
             return sum(outputs)
         else:

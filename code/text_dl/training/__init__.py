@@ -10,7 +10,7 @@ from text_dl.training.statistics import Statistics
 from text_dl.training.callbacks import PrintCallback, ModelSaveCallback, HistorySaveCallback
 
 
-def evaluate(model, val_itr):
+def evaluate(model, val_itr, input_transform_f):
     '''
     Returns the total loss of the model on the validation and a confusion matrix
     dataset
@@ -18,15 +18,15 @@ def evaluate(model, val_itr):
     if val_itr is None:
         return None
 
-    total_loss = 0.0
-    
+    total_loss = 0.0    
     model.eval()
 
     #1. Calculating the loss
     for _, batch in enumerate(val_itr):
-        loss = model.loss(batch.text, batch.target)
+        loss = model.loss(input_transform_f(batch), batch.target)
         total_loss += loss.data.item()
     
+    #2. Calculate accuracy
     model.train()
     return total_loss / len(val_itr)
 
@@ -102,7 +102,7 @@ class Trainer:
                     callback.on_iter_end(iter_idx, epoch_idx, model, iter_stats)
             
             #Update epoch statistics
-            val_loss = evaluate(model, val_itr)
+            val_loss = evaluate(model, val_itr, self.input_transform_f)
             epoch_stats.update_stat("train_loss", total_loss_value / len(train_itr))
             epoch_stats.update_stat("val_loss", val_loss)
             epoch_stats.step()

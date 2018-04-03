@@ -2,6 +2,7 @@ import os
 import json
 import sys
 import torch
+from torch.autograd import Variable
 
 from text_dl.modules.embeddings import MultiEmbedding
 from text_dl.models import models_factory
@@ -29,10 +30,10 @@ def pad_batches(batches):
     out_batches = []
     
     for _, batch in enumerate(batches):
-        out_dims = batch.size()
+        out_dims = list(batch.size())
         length = out_dims[0]
         out_dims[0] = max_seq_len
-        out_batch = torch.zeros(*out_dims)
+        out_batch = Variable(batch.data.new(*out_dims).fill_(1))
         out_batch[:length, :] = batch
         out_batches.append(out_batch)
 
@@ -40,7 +41,8 @@ def pad_batches(batches):
 
 def input_transform_f(batch):
     [batch.text, batch.ner] = pad_batches([batch.text, batch.ner])
-    return torch.stack([batch.text, batch.ner], 2)
+    stacked = torch.stack([batch.text, batch.ner], 2)
+    return stacked
 
 def main():
     '''
@@ -72,7 +74,7 @@ def main():
 
     # Trainer's function
     print("Creating trainer")
-    trainer_config['input_transform_f'] = input_transform_f
+    trainer_config['params']['input_transform_f'] = input_transform_f
     trainer = trainers_factory(trainer_config)
 
     # Results of the training

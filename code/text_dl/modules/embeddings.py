@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from text_dl.modules import Module
 
-from modules.utils import Elementwise
+from text_dl.modules.utils import Elementwise
 
 class MultiEmbedding(nn.Module):
     def __init__(self, vocab_sizes, hidden_sizes, vectors, are_trainable, *args):
