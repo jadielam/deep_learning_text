@@ -1,9 +1,10 @@
 import torch
 import torchtext.data as data
+from text_dl.preprocessing.vectors import OneHotEncoderVectors
 
 def extra_vocabs_fields_generator(training_path, batch_size = 1, 
                                     validation_path = None, 
-                                    vocav_type = "glove.twitter.27B.200d", 
+                                    vocab_type = "glove.twitter.27B.200d", 
                                     entities_annotations = ['B-PARK', 'I-PARK', 'B-ATTR', 'I-ATTR', 'B-REST', 'I-REST', 'B-RESO', 'I-RESO', 'B-PLAC', 'I-PLAC', 'B-CHAR', 'I-CHAR', 'B-ENTE', 'I-ENTE']):
     text_field = data.Field(sequential = True, eos_token = '<eos>',
                             init_token = '<sos>', pad_token = '<pad>',
