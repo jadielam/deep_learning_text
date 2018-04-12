@@ -5,7 +5,7 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 
 from text_dl.common.factories import generic_factory
-
+from text_dl.preprocessing.input_transform import input_transform_factory
 from text_dl.training.statistics import Statistics
 from text_dl.training.callbacks import PrintCallback, ModelSaveCallback, HistorySaveCallback
 
@@ -32,7 +32,7 @@ def evaluate(model, val_itr, input_transform_f):
 
 class Trainer:
     def __init__(self, nb_epochs = 10, optimizer = {"type": "adam"}, callbacks = None, scheduler = None,
-                model_weights_path = None, input_transform_f = lambda x : x):
+                model_weights_path = None, input_transform_type = "text_field"):
         self.nb_epochs = nb_epochs
         self.optimizer_factory_conf = optimizer
         self.scheduler_factory_conf = scheduler
@@ -45,7 +45,7 @@ class Trainer:
         self.callbacks.add(HistorySaveCallback())
 
         self.model_weights_path = model_weights_path
-        self.input_transform_f = input_transform_f
+        self.input_transform_f = input_transform_factory(input_transform_type)
 
     def train(self, model, train_itr, val_itr):
         '''

@@ -21,14 +21,14 @@ def main():
     
     # Preprocessor object
     print("Creating vocabulary and iterators")
-    vocabulary, train_itr, val_itr = generators_factory(generator_config)
+    vocabularies, train_itr, val_itr = generators_factory(generator_config)
 
     # Model object
     print("Creating model")
     
     # TODO: This is the only part of the code that is not pure enough.
     # Otherwise, all the factories look nice to me.
-    embedding = embedding_factory(vocabulary, model_config['params']['train_embedding'])
+    embedding = embedding_factory(vocabularies, model_config['params']['train_embedding'])
     model_config['params']['embedding'] = embedding
     del model_config['params']['train_embedding']
     model = models_factory(model_config)

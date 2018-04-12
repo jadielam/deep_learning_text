@@ -14,6 +14,7 @@
         "type": "simple",
         "params": {
             "nb_epochs": 20,
+            "input_transform_type": "text_field",
             "optimizer": {
                 "type": "sgd",
                 "params": {

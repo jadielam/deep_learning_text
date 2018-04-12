@@ -28,7 +28,7 @@ def csv_generator(training_path, batch_size, validation_path = None, vocab_type 
     device_type = None if use_cuda else -1
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
                                         device = device_type, sort = False) if dts else None for (dts, train) in zip(datasets, [True, False])]
-    return vocabulary, training_itr, validation_itr
+    return [vocabulary], training_itr, validation_itr
 
 def csv_extra_vocabs_generator(training_path, batch_size, validation_path = None, 
                                 vocab_type = "glove.twitter.27B.200d", 
@@ -59,4 +59,4 @@ def csv_extra_vocabs_generator(training_path, batch_size, validation_path = None
     device_type = None if use_cuda else -1
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
                                         device = device_type, sort = False) if dts else None for (dts, train) in zip(datasets, [True, False])]
-    return text_vocabulary, annotations_vocabulary, training_itr, validation_itr
+    return [text_vocabulary, annotations_vocabulary], training_itr, validation_itr

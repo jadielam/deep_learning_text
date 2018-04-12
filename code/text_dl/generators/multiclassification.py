@@ -46,4 +46,4 @@ def csv_generator(training_path, batch_size, validation_path = None, vocab_type 
     device_type = None if use_cuda else -1
     [training_itr, validation_itr] = [data.Iterator(dts, batch_size = batch_size, train = train,
                                         device = device_type, sort = False) if dts else None for (dts, train) in zip(datasets, [True, False])]
-    return vocabulary, training_itr, validation_itr
+    return [vocabulary], training_itr, validation_itr

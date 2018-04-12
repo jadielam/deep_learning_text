@@ -38,7 +38,7 @@ class MultiEmbedding(nn.Module):
         concat_embeddings = self.elementwise_embeddings(input_t)
         return concat_embeddings
 
-def embedding_factory(vocab, train_embedding = False):
+def embedding_factory(vocabularies_l, train_embedding = False):
     '''
     Creates an embedding given the vocabulary
     A vocabulary object is necessary
@@ -50,10 +50,21 @@ def embedding_factory(vocab, train_embedding = False):
     Returns:
     - embedding (:obj:`torch.nn.Embedding`): The embedding layer to be used
     '''
-    vocab_size = vocab.vectors.shape[0]
-    hidden_size = vocab.vectors.shape[1]
-    embedding = nn.Embedding(vocab_size, hidden_size)
-    embedding.weight = nn.Parameter(vocab.vectors)
-    embedding.weight.requires_grad = train_embedding
-    return embedding
+    if len(vocabularies_l) == 1:
+        vocab = vocabularies_l[0]
+        vocab_size = vocab.vectors.shape[0]
+        hidden_size = vocab.vectors.shape[1]
+        embedding = nn.Embedding(vocab_size, hidden_size)
+        embedding.weight = nn.Parameter(vocab.vectors)
+        embedding.weight.requires_grad = train_embedding
+        return embedding
+    else:
+        vocab_sizes = [vocab.vectors.shape[0] for vocab in vocabularies_l]
+        hidden_sizes = [vocab.vectors.shape[1] for vocab in vocabularies_l]
+        vectors = [vocab.vectors for vocab in vocabularies_l]
+        are_trainable = [False for vocab in vocabularies_l]
+
+        return MultiEmbedding(vocab_sizes, hidden_sizes, vectors, are_trainable)
+
+
 
